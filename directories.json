@@ -1,0 +1,16 @@
+// Sample Directories File
+
+// In this JSON file, commenting out code is done by putting double-slash (//) at the start of a line,
+// or surrounding the code with slash-asterisk (/*) and asterisk-slash (*/).
+[
+    {
+        "name": "Desktop",
+        "path": "%USERPROFILE%\\desktop",
+        "enabled": true
+    },
+    {
+        "name": "C-Drive",
+        "path": "C:\\",
+        "enabled": true
+    },
+]
