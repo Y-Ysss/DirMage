@@ -1,9 +1,8 @@
-module github.com/Y-Ysss/DirMage
+module DirMage
 
 go 1.12
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.0.1
-	github.com/mattn/go-runewidth v0.0.4 // indirect
-	github.com/mattn/go-tty v0.0.0-20190424173100-523744f04859 // indirect
+	github.com/AlecAivazis/survey/v2 v2.0.5
+	github.com/BurntSushi/toml v0.3.1
 )
