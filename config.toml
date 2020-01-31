@@ -1,0 +1,6 @@
+[selector]
+dirs_list_path = "my-directories.json"
+page_size = 15
+
+[prompt]
+prompt_string = "\n{32}[{dirName}] {0}{36}{workingDir} {37}{git}{37}\n$ "
