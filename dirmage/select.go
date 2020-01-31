@@ -1,25 +1,19 @@
-package main
+package dirmage
 
 import (
-	// "os"
-	// "os/exec"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"regexp"
 	"github.com/AlecAivazis/survey/v2"
 )
 
-func dirInfoFormatter(di DirInfo) string {
-	return fmt.Sprintf("%s (%s)", di.Name, di.Path)
-}
-
-func SelectDirectory() {
-	dirsJson, readErr := ioutil.ReadFile("directories.json")
-	if readErr != nil {
-		log.Fatal(readErr)
-	}
+func SelectDirectory(fn func(string, string)) {
+	// dirsJson, readErr := ioutil.ReadFile(DirectoriesList)
+	// if readErr != nil {
+	// 	log.Fatal(readErr)
+	// }
+	dirsJson := ReadFile(DirectoriesList)
 	rePttrn := regexp.MustCompile("/\\*.*?\\*/|//.*\n")
 	dirsJsonStr := rePttrn.ReplaceAllString(string(dirsJson), "")
 
@@ -28,17 +22,20 @@ func SelectDirectory() {
 		log.Fatal(unmsErr)
 	}
 
-	var dirsList []string
+	var dirsNameList []string
+	dirsList := make(map[string]DirInfo)
 	for _, dir := range dirs {
 		if dir.Enabled {
-			dirsList = append(dirsList, dirInfoFormatter(dir))
+			dirInfo := dirInfoFormatter(dir)
+			dirsNameList = append(dirsNameList, dirInfo)
+			dirsList[dirInfo] = dir
 		}
 	}
 
 	var selectDir string
 	prompt := &survey.Select{
 		Message: "Choose a directory:",
-		Options: dirsList,
+		Options: dirsNameList,
 		PageSize: 15,
 	}
 
@@ -47,12 +44,11 @@ func SelectDirectory() {
 	}
 
 	if selectDir != "" {
-		for _, dir := range dirs {
-			if dirInfoFormatter(dir) == selectDir {
-				// fmt.Printf("\nName : %s\nPath : %s\n", dir.Name, dir.Path)
-				Shell(dir.Name, dir.Path)
-			}
-		}
+		d := dirsList[selectDir]
+		fn(d.Name, d.Path)
 	}
 }
 
+func dirInfoFormatter(di DirInfo) string {
+	return fmt.Sprintf("%s (%s)", di.Name, di.Path)
+}

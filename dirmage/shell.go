@@ -1,4 +1,4 @@
-package main
+package dirmage
 
 import (
 	"fmt"
@@ -19,10 +19,15 @@ func Shell(dirName, dirPath string) {
 	chDirErr := os.Chdir(dirPath)
 	if chDirErr != nil {
 		fmt.Fprintln(os.Stderr, chDirErr)
-	}
-
+	}	
 	promptStr := strings.Replace(PromptString, "{dirName}", dirName, -1)
 	
+	rePttrn = regexp.MustCompile("{(0|3[0-9]|4[0-7])}")
+	replaceFunc := func(s string) string {
+		return fmt.Sprintf("\x1b[%sm", rePttrn.FindStringSubmatch(s)[1])
+	}
+	promptStr = rePttrn.ReplaceAllStringFunc(promptStr, replaceFunc)
+
 	reader := bufio.NewReader(os.Stdin)
 	for {
 		prompt := strings.Replace(promptStr, "{workingDir}", getWorkingDir(), -1)
@@ -57,10 +62,10 @@ func getGitBranch() string {
 		log.Fatal(execErr)
 		return ""
 	}
-	color := "\x1b[37m"
+	color := "\x1b[37m" // White
 	fmt.Println("[[%d]]", len(out))
 	if len(out) > 0 {
-		color = "\x1b[31m"
+		color = "\x1b[31m" // Red
 	}
 	return fmt.Sprintf("%s(%s)\x1b[37m", color, s[1])
 }
@@ -105,6 +110,13 @@ func runCommand(cmdStr string) error {
 			return nil
 		}
 		return os.Chdir(cmdStrArr[1])
+	case "start":
+		if len(cmdStrArr) == 1 {
+			return exec.Command("cmd", "/c", "start").Start()
+		} else {
+			return exec.Command("explorer", cmdStrArr[1:]...).Start()
+		}
+		// return cmd.Start()
 	}
 	cmd := exec.Command(cmdStrArr[0], cmdStrArr[1:]...)
 	cmd.Stderr = os.Stderr
