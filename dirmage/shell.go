@@ -12,7 +12,9 @@ import (
 	// "errors"
 )
 
-func Shell(dirName, dirPath string) {
+func Shell(info *DirInfo) {
+	dirName := info.Name
+	dirPath := info.Path
 	rePttrn := regexp.MustCompile("%.*?%")
 	homeDir, _ := os.UserHomeDir()
 	dirPath = rePttrn.ReplaceAllString(string(dirPath), homeDir)

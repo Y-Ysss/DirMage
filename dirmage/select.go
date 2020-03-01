@@ -8,7 +8,7 @@ import (
 	"github.com/AlecAivazis/survey/v2"
 )
 
-func SelectDirectory(fn func(string, string)) {
+func SelectDirectory(fn func(*DirInfo)) {
 	// dirsJson, readErr := ioutil.ReadFile(DirectoriesList)
 	// if readErr != nil {
 	// 	log.Fatal(readErr)
@@ -21,14 +21,13 @@ func SelectDirectory(fn func(string, string)) {
 	if unmsErr := json.Unmarshal(([]byte)(dirsJsonStr), &dirs); unmsErr != nil {
 		log.Fatal(unmsErr)
 	}
-
 	var dirsNameList []string
-	dirsList := make(map[string]DirInfo)
+	DirsList = make(map[string]DirInfo)
 	for _, dir := range dirs {
 		if dir.Enabled {
 			dirInfo := dirInfoFormatter(dir)
 			dirsNameList = append(dirsNameList, dirInfo)
-			dirsList[dirInfo] = dir
+			DirsList[dirInfo] = dir
 		}
 	}
 
@@ -44,8 +43,8 @@ func SelectDirectory(fn func(string, string)) {
 	}
 
 	if selectDir != "" {
-		d := dirsList[selectDir]
-		fn(d.Name, d.Path)
+		info := DirsList[selectDir]
+		fn(&info)
 	}
 }
 

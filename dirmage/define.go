@@ -19,7 +19,7 @@ type tomlSelector struct {
 type tomlPrompt struct {
 	String string `toml:"prompt_string"`
 }
-
+var DirsList map[string]DirInfo
 var PromptString string = "\n\x1b[32m[{dirName}] \x1b[0m\x1b[36m{workingDir} {git}\x1b[37m\n$ "
 var DirectoriesList string = "directories.json"
 // type Dirs struct {
