@@ -1,6 +1,11 @@
+[data]
+dirs_file = "my-directories.json"
+
 [selector]
-dirs_list_path = "my-directories.json"
 page_size = 15
+selector_text = "{$Name} <{$Path}>"
+edit_selector_text = "{$Enabled}{$Name} <{$Path}>"
+enabled_text = [" ", "*"]
 
 [prompt]
-prompt_string = "\n{32}[{dirName}] {0}{36}{workingDir} {37}{git}{37}\n$ "
+prompt_text = "\n{32}[{$DirName}] {0}{36}{$WorkingDir} {37}{$Git}{37}\n$ "

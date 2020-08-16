@@ -1,16 +1,30 @@
-// Sample Directories File
-
-// In this JSON file, commenting out code is done by putting double-slash (//) at the start of a line,
-// or surrounding the code with slash-asterisk (/*) and asterisk-slash (*/).
-[
+{
+  "linux": [
     {
-        "name": "Desktop",
-        "path": "%USERPROFILE%\\desktop",
-        "enabled": true
+      "name": "Root",
+      "description": "Root directory",
+      "path": "/",
+      "enabled": true
     },
     {
-        "name": "C-Drive",
-        "path": "C:\\",
-        "enabled": true
+      "name": "UserDirectory",
+      "description": "",
+      "path": "$HOME",
+      "enabled": false
     }
-]
+  ],
+  "windows": [
+    {
+      "name": "C-Drive",
+      "description": "",
+      "path": "C:\\",
+      "enabled": true
+    },
+    {
+      "name": "UserDirectory",
+      "description": "",
+      "path": "%USERPROFILE%",
+      "enabled": true
+    }
+  ]
+}
