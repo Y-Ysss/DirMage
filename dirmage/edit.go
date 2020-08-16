@@ -1,52 +1,64 @@
 package dirmage
 
 import (
+	"encoding/json"
 	"fmt"
-	"regexp"
+
 	"github.com/AlecAivazis/survey/v2"
 )
 
-func EditDirectory() {
-	fmt.Println("Edit")
-	dirsJson := ReadFile(DirectoriesList)
-	rePttrn := regexp.MustCompile("{(.|\f|\n|\r|\t)*?}")
-	num := 0
-	replaceFunc := func(s []byte) []byte {
-		num++
-		return ([]byte)(fmt.Sprintf("{%d}", num))
-	}
-	str := rePttrn.ReplaceAllFunc(dirsJson, replaceFunc)
-	fmt.Printf("%s", str)
+func Edit() {
+	Select(OpenEdit, true)
 }
 
-func Edit(info *DirInfo) {
-	fmt.Println(info)
+func OpenEdit(info *dirInfo) {
 	name := info.Name
-	promptInput := &survey.Input{
-		Message: "Name",
-		Default: name,
-	}
-	survey.AskOne(promptInput, &name)
-
+	desc := info.Description
 	path := info.Path
-	promptInput = &survey.Input{
-		Message: "Path",
-		Default: path,
-	}
-	survey.AskOne(promptInput, &path)
-
 	enabled := info.Enabled
-	promptConfirm := &survey.Confirm{
-	    Message: "Enable ?",
-	    Default: enabled,
+	save := true
+
+	survey.AskOne(
+		&survey.Input{
+			Message: "Name",
+			Default: name,
+		}, &name)
+
+	survey.AskOne(
+		&survey.Input{
+			Message: "Path",
+			Default: desc,
+		}, &desc)
+
+	survey.AskOne(
+		&survey.Input{
+			Message: "Path",
+			Default: path,
+		}, &path)
+
+	survey.AskOne(
+		&survey.Confirm{
+			Message: "Enable ?",
+			Default: enabled,
+		}, &enabled)
+
+	survey.AskOne(
+		&survey.Confirm{
+			Message: "Save ?",
+			Default: save,
+		}, &save)
+
+	if save {
+		fmt.Println(name, desc, path, enabled)
+		info.SetValues(name, desc, path, enabled)
+		jsonBytes, err := json.MarshalIndent(dirsList, "", "  ")
+		if err != nil {
+			fmt.Print(err)
+			return
+		}
+		WriteFile("directories.json", jsonBytes)
+		fmt.Println("Saved")
+	} else {
+		fmt.Println("Keep")
 	}
-	survey.AskOne(promptConfirm, &enabled)
-
-	fmt.Println(name, path, enabled)
-	// fmt.Println(dirName, dirPath)
-	// dirsJson := ReadFile(DirectoriesList)
-	// rePttrn := regexp.MustCompile("{(\f|\n|\r|\t)*?\"name\": ??\"" + dirName + "\"(.|\f|\n|\r|\t)*?}")
-	// str := rePttrn.Find(dirsJson)
-	// fmt.Printf("%s", str)
-
 }

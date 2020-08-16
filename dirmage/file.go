@@ -12,3 +12,10 @@ func ReadFile(path string) []byte {
 	}
 	return data
 }
+
+func WriteFile(path string, data []byte) {
+	err := ioutil.WriteFile(path, data, 0664)
+	if err != nil {
+		log.Fatal(err)
+	}
+}

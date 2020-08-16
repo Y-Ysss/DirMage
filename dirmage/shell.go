@@ -1,18 +1,22 @@
 package dirmage
 
 import (
+	"bufio"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
-	"bufio"
-	"strings"
-	"log"
 	"regexp"
-	"io/ioutil"
+	"strings"
 	// "errors"
 )
 
-func Shell(info *DirInfo) {
+func Shell() {
+	Select(RunShell)
+}
+
+func RunShell(info *dirInfo) {
 	dirName := info.Name
 	dirPath := info.Path
 	rePttrn := regexp.MustCompile("%.*?%")
@@ -21,9 +25,9 @@ func Shell(info *DirInfo) {
 	chDirErr := os.Chdir(dirPath)
 	if chDirErr != nil {
 		fmt.Fprintln(os.Stderr, chDirErr)
-	}	
-	promptStr := strings.Replace(PromptString, "{dirName}", dirName, -1)
-	
+	}
+	promptStr := strings.Replace(conf.Prompt.Text, "{$DirName}", dirName, -1)
+
 	rePttrn = regexp.MustCompile("{(0|3[0-9]|4[0-7])}")
 	replaceFunc := func(s string) string {
 		return fmt.Sprintf("\x1b[%sm", rePttrn.FindStringSubmatch(s)[1])
@@ -32,8 +36,8 @@ func Shell(info *DirInfo) {
 
 	reader := bufio.NewReader(os.Stdin)
 	for {
-		prompt := strings.Replace(promptStr, "{workingDir}", getWorkingDir(), -1)
-		prompt = strings.Replace(prompt, "{git}", getGitBranch(), -1)
+		prompt := strings.Replace(promptStr, "{$WorkingDir}", getWorkingDir(), -1)
+		prompt = strings.Replace(prompt, "{$Git}", getGitBranch(), -1)
 		fmt.Printf(prompt)
 		cmdStr, err := reader.ReadString('\n')
 		if err != nil {
@@ -65,7 +69,7 @@ func getGitBranch() string {
 		return ""
 	}
 	color := "\x1b[37m" // White
-	fmt.Println("[[%d]]", len(out))
+	fmt.Printf("[[%d]]", len(out))
 	if len(out) > 0 {
 		color = "\x1b[31m" // Red
 	}
@@ -80,18 +84,6 @@ func getWorkingDir() string {
 	}
 	return wd
 }
-
-// func getDirList() string {
-// 	var list []string
-// 	fileInfo, err := ioutil.ReadDir("./")
-//     if err != nil {
-//     	fmt.Println(err)
-//     }
-//     for _, f := range fileInfo {
-//         list = append(list, f.Name())
-//     }
-//     return list
-// }
 
 func runCommand(cmdStr string) error {
 	cmdStr = strings.TrimSuffix(cmdStr, "\n")
@@ -122,7 +114,7 @@ func runCommand(cmdStr string) error {
 	}
 	cmd := exec.Command(cmdStrArr[0], cmdStrArr[1:]...)
 	cmd.Stderr = os.Stderr
-    cmd.Stdin = os.Stdin
+	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	return cmd.Run()
 }

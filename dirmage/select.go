@@ -1,40 +1,34 @@
 package dirmage
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"regexp"
+	"strings"
+
 	"github.com/AlecAivazis/survey/v2"
 )
 
-func SelectDirectory(fn func(*DirInfo)) {
-	// dirsJson, readErr := ioutil.ReadFile(DirectoriesList)
-	// if readErr != nil {
-	// 	log.Fatal(readErr)
-	// }
-	dirsJson := ReadFile(DirectoriesList)
-	rePttrn := regexp.MustCompile("/\\*.*?\\*/|//.*\n")
-	dirsJsonStr := rePttrn.ReplaceAllString(string(dirsJson), "")
-
-	var dirs []DirInfo
-	if unmsErr := json.Unmarshal(([]byte)(dirsJsonStr), &dirs); unmsErr != nil {
-		log.Fatal(unmsErr)
+func Select(fn func(*dirInfo), opt ...bool) {
+	visible := false
+	text := conf.Selector.Text
+	if len(opt) == 1 {
+		visible = opt[0]
+		text = conf.Selector.EditText
 	}
+	dirs := dirsList["Windows"]
 	var dirsNameList []string
-	DirsList = make(map[string]DirInfo)
 	for _, dir := range dirs {
-		if dir.Enabled {
-			dirInfo := dirInfoFormatter(dir)
-			dirsNameList = append(dirsNameList, dirInfo)
-			DirsList[dirInfo] = dir
+		if dir.Enabled || visible {
+			s := dirInfoFormatter(dir, text)
+			dirsNameList = append(dirsNameList, s)
+			// dirsList[dirInfo] = dir
 		}
 	}
 
-	var selectDir string
+	var selectDir int
 	prompt := &survey.Select{
-		Message: "Choose a directory:",
-		Options: dirsNameList,
+		Message:  "Choose a directory:",
+		Options:  dirsNameList,
 		PageSize: 15,
 	}
 
@@ -42,12 +36,18 @@ func SelectDirectory(fn func(*DirInfo)) {
 		log.Fatal(surveyErr)
 	}
 
-	if selectDir != "" {
-		info := DirsList[selectDir]
-		fn(&info)
-	}
+	fmt.Println(dirs[selectDir].Name, dirs[selectDir].Path)
+
+	// if selectDir != -1 {
+	fn(&dirs[selectDir])
+	// }
 }
 
-func dirInfoFormatter(di DirInfo) string {
-	return fmt.Sprintf("%s (%s)", di.Name, di.Path)
+func dirInfoFormatter(di dirInfo, text string) string {
+	enabled := conf.Selector.EnabledText[0]
+	if !di.Enabled {
+		enabled = conf.Selector.EnabledText[1]
+	}
+	r := strings.NewReplacer("{$Name}", di.Name, "{$Desc}", di.Description, "{$Path}", di.Path, "{$Enabled}", enabled)
+	return r.Replace(text)
 }
