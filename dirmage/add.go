@@ -32,10 +32,10 @@ func Add() {
 			Message: "Enable ?",
 		}, &enabled)
 
-	fmt.Println("Name       :", name)
-	fmt.Println("Description:", desc)
-	fmt.Println("Path       :", path)
-	fmt.Println("Enabled    :", enabled)
+	fmt.Println("Name        :", name)
+	fmt.Println("Description :", desc)
+	fmt.Println("Path        :", path)
+	fmt.Println("Enabled     :", enabled)
 
 	survey.AskOne(
 		&survey.Confirm{

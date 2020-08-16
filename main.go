@@ -17,7 +17,7 @@ func main() {
 			arg := os.Args[1]
 			switch arg {
 			case "add":
-				fmt.Printf("Add %s\n", arg)
+				dirmage.Add()
 			case "edit":
 				dirmage.Edit()
 			default:

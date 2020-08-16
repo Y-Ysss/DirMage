@@ -7,6 +7,10 @@ type dirInfo struct {
 	Enabled     bool   `json:"enabled"`
 }
 
+func NewDirInfo(name string, description string, path string, enabled bool) dirInfo {
+	return dirInfo{name, description, path, enabled}
+}
+
 func (dir *dirInfo) SetValues(name string, description string, path string, enabled bool) {
 	dir.Name = name
 	dir.Description = description
