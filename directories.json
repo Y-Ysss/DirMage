@@ -1,5 +1,5 @@
 {
-  "Linux": [
+  "linux": [
     {
       "name": "Root",
       "description": "Root directory",
@@ -13,7 +13,7 @@
       "enabled": false
     }
   ],
-  "Windows": [
+  "windows": [
     {
       "name": "C-Drive",
       "description": "",
@@ -24,12 +24,6 @@
       "name": "UserDirectory",
       "description": "",
       "path": "%USERPROFILE%",
-      "enabled": true
-    },
-    {
-      "name": "DirMage",
-      "description": "DirMage",
-      "path": "C:\\Users\\Ys\\Projects\\GoProjects\\DirMage\\dirmage",
       "enabled": true
     }
   ]

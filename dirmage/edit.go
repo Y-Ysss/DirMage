@@ -26,7 +26,7 @@ func OpenEdit(info *dirInfo) {
 
 	survey.AskOne(
 		&survey.Input{
-			Message: "Path",
+			Message: "Description",
 			Default: desc,
 		}, &desc)
 

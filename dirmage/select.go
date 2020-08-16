@@ -15,7 +15,7 @@ func Select(fn func(*dirInfo), opt ...bool) {
 		visible = opt[0]
 		text = conf.Selector.EditText
 	}
-	dirs := dirsList["Windows"]
+	dirs := dirsList[working]
 	var dirsNameList []string
 	for _, dir := range dirs {
 		if dir.Enabled || visible {
