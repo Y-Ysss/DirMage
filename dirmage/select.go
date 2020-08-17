@@ -1,14 +1,13 @@
 package dirmage
 
 import (
-	"fmt"
 	"log"
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 )
 
-func Select(fn func(*dirInfo), opt ...bool) {
+func Select(fn func(*dirInfo, int), opt ...bool) {
 	visible := false
 	text := conf.Selector.Text
 	if len(opt) == 1 {
@@ -17,8 +16,9 @@ func Select(fn func(*dirInfo), opt ...bool) {
 	}
 	dirs := dirsList[working]
 	var dirsNameList []string
-	for _, dir := range dirs {
+	for i, dir := range dirs {
 		if dir.Enabled || visible {
+			indexList = append(indexList, i)
 			s := dirInfoFormatter(dir, text)
 			dirsNameList = append(dirsNameList, s)
 			// dirsList[dirInfo] = dir
@@ -35,11 +35,8 @@ func Select(fn func(*dirInfo), opt ...bool) {
 	if surveyErr := survey.AskOne(prompt, &selectDir); surveyErr != nil {
 		log.Fatal(surveyErr)
 	}
-
-	fmt.Println(dirs[selectDir].Name, dirs[selectDir].Path)
-
 	// if selectDir != -1 {
-	fn(&dirs[selectDir])
+	fn(&dirs[indexList[selectDir]], selectDir)
 	// }
 }
 

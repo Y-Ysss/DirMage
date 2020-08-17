@@ -12,10 +12,11 @@ import (
 )
 
 var dirsList map[string][]dirInfo = make(map[string][]dirInfo)
+var indexList []int
 var conf Config
 var working string
 
-func Initialize() {
+func init() {
 	if _, err := toml.DecodeFile("config.toml", &conf); err != nil {
 		log.Fatal(err)
 	}

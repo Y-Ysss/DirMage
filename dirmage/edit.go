@@ -11,7 +11,7 @@ func Edit() {
 	Select(OpenEdit, true)
 }
 
-func OpenEdit(info *dirInfo) {
+func OpenEdit(info *dirInfo, _ int) {
 	name := info.Name
 	desc := info.Description
 	path := info.Path
@@ -56,9 +56,9 @@ func OpenEdit(info *dirInfo) {
 			fmt.Print(err)
 			return
 		}
-		WriteFile("directories.json", jsonBytes)
+		WriteFile(conf.Data.DirsFile, jsonBytes)
 		fmt.Println("Saved")
 	} else {
-		fmt.Println("Keep")
+		fmt.Println("No change")
 	}
 }
