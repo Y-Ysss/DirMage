@@ -15,7 +15,7 @@ var dirsList map[string][]dirInfo = make(map[string][]dirInfo)
 var conf Config
 var working string
 
-func Initialize() {
+func init() {
 	if _, err := toml.DecodeFile("config.toml", &conf); err != nil {
 		log.Fatal(err)
 	}

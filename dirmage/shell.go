@@ -16,7 +16,7 @@ func Shell() {
 	Select(RunShell)
 }
 
-func RunShell(info *dirInfo) {
+func RunShell(info *dirInfo, _ int) {
 	dirName := info.Name
 	dirPath := info.Path
 	rePttrn := regexp.MustCompile("%.*?%")

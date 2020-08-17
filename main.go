@@ -9,7 +9,6 @@ import (
 
 func main() {
 	go func() {
-		dirmage.Initialize()
 		arglen := len(os.Args)
 		if arglen == 1 {
 			dirmage.Shell()
@@ -20,6 +19,8 @@ func main() {
 				dirmage.Add()
 			case "edit":
 				dirmage.Edit()
+			case "remove":
+				dirmage.Remove()
 			default:
 				fmt.Printf("'%s' is an invalid command line argument.", arg)
 			}
