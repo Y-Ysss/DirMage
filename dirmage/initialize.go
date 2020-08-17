@@ -12,6 +12,7 @@ import (
 )
 
 var dirsList map[string][]dirInfo = make(map[string][]dirInfo)
+var indexList []int
 var conf Config
 var working string
 

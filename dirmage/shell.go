@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"strings"
 	// "errors"
 )
@@ -57,19 +58,20 @@ func getGitBranch() string {
 	}
 	data, readErr := ioutil.ReadFile(".git/HEAD")
 	if readErr != nil {
-		log.Fatal(readErr)
 		return ""
 	}
 	gitStRePttrn := regexp.MustCompile("ref: refs/heads/(.+)")
 	s := gitStRePttrn.FindSubmatch(data)
 
-	out, execErr := exec.Command("cmd", "/c", "git --no-optional-locks status --porcelain").Output()
+	cmdErr := exec.Command("git", "--help").Run()
+	if cmdErr != nil {
+		return ""
+	}
+	out, execErr := exec.Command("git", "--no-optional-locks", "status", "--porcelain").Output()
 	if execErr != nil {
-		log.Fatal(execErr)
 		return ""
 	}
 	color := "\x1b[37m" // White
-	fmt.Printf("[[%d]]", len(out))
 	if len(out) > 0 {
 		color = "\x1b[31m" // Red
 	}
@@ -86,6 +88,7 @@ func getWorkingDir() string {
 }
 
 func runCommand(cmdStr string) error {
+	osTarget := runtime.GOOS
 	cmdStr = strings.TrimSuffix(cmdStr, "\n")
 	cmdStrArr := strings.Fields(cmdStr)
 	if len(cmdStrArr) == 0 {
@@ -95,7 +98,10 @@ func runCommand(cmdStr string) error {
 	case "exit":
 		os.Exit(0)
 	case "cls", "clear":
-		cmd := exec.Command("cmd", "/c", "cls")
+		cmd := exec.Command("clear")
+		if osTarget == "windows" {
+			cmd = exec.Command("cmd", "/c", "cls")
+		}
 		cmd.Stdout = os.Stdout
 		return cmd.Run()
 	case "cd", "chdir":
@@ -105,10 +111,12 @@ func runCommand(cmdStr string) error {
 		}
 		return os.Chdir(cmdStrArr[1])
 	case "start":
-		if len(cmdStrArr) == 1 {
-			return exec.Command("cmd", "/c", "start").Start()
-		} else {
-			return exec.Command("explorer", cmdStrArr[1:]...).Start()
+		if osTarget == "windows" {
+			if len(cmdStrArr) == 1 {
+				return exec.Command("cmd", "/c", "start").Start()
+			} else {
+				return exec.Command("explorer", cmdStrArr[1:]...).Start()
+			}
 		}
 		// return cmd.Start()
 	}
