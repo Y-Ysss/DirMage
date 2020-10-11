@@ -25,9 +25,9 @@ func init() {
 	workingOn()
 }
 
-func checkExistence(file string, value string) {
-	if _, err := os.Stat(file); err != nil {
-		file, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE, 0666)
+func checkExistence(name string, value string) {
+	if _, err := os.Stat(name); err != nil {
+		file, err := os.OpenFile(name, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -35,6 +35,7 @@ func checkExistence(file string, value string) {
 		if _, err = file.WriteString(value); err != nil {
 			log.Fatal(err)
 		}
+		fmt.Println("File(" + name + ") does not exist -> File is created.")
 	}
 }
 
@@ -73,7 +74,6 @@ func readDrectoriesJson() {
 		log.Fatal(unmsErr)
 		os.Exit(1)
 	}
-	print(dirsList)
 }
 
 func workingOn() {
