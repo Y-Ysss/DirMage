@@ -1,3 +1,10 @@
+# DirMage Config
+# https://github.com/Y-Ysss/DirMage
+
+# TOML's syntax primarily consists of
+#     key = "value" pairs, [section names], and # comments.
+# TOML Official website https://toml.io/
+
 [data]
 dirs_file = "my-directories.json"
 

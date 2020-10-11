@@ -41,10 +41,10 @@ func Select(fn func(*dirInfo, int), opt ...bool) {
 }
 
 func dirInfoFormatter(di dirInfo, text string) string {
-	enabled := conf.Selector.EnabledText[0]
+	enabled := replaceColor(conf.Selector.EnabledText[0])
 	if !di.Enabled {
-		enabled = conf.Selector.EnabledText[1]
+		enabled = replaceColor(conf.Selector.EnabledText[1])
 	}
 	r := strings.NewReplacer("{$Name}", di.Name, "{$Desc}", di.Description, "{$Path}", di.Path, "{$Enabled}", enabled)
-	return r.Replace(text)
+	return r.Replace(replaceColor(text))
 }
