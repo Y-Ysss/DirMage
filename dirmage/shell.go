@@ -29,11 +29,12 @@ func RunShell(info *dirInfo, _ int) {
 	}
 	promptStr := strings.Replace(conf.Prompt.Text, "{$DirName}", dirName, -1)
 
-	rePttrn = regexp.MustCompile("{(0|3[0-9]|4[0-7])}")
-	replaceFunc := func(s string) string {
-		return fmt.Sprintf("\x1b[%sm", rePttrn.FindStringSubmatch(s)[1])
-	}
-	promptStr = rePttrn.ReplaceAllStringFunc(promptStr, replaceFunc)
+	// rePttrn = regexp.MustCompile("{(0|3[0-9]|4[0-7])}")
+	// replaceFunc := func(s string) string {
+	// 	return fmt.Sprintf("\x1b[%sm", rePttrn.FindStringSubmatch(s)[1])
+	// }
+	// promptStr = rePttrn.ReplaceAllStringFunc(promptStr, replaceFunc)
+	promptStr = replaceColor(promptStr)
 
 	reader := bufio.NewReader(os.Stdin)
 	for {

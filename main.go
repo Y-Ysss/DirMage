@@ -15,11 +15,11 @@ func main() {
 		} else if arglen == 2 {
 			arg := os.Args[1]
 			switch arg {
-			case "add":
+			case "add", "-a":
 				dirmage.Add()
-			case "edit":
+			case "edit", "-e":
 				dirmage.Edit()
-			case "remove":
+			case "remove", "-r":
 				dirmage.Remove()
 			default:
 				fmt.Printf("'%s' is an invalid command line argument.", arg)
