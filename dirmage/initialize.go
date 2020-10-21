@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"runtime"
 
 	"github.com/BurntSushi/toml"
@@ -15,19 +16,26 @@ var dirsList map[string][]dirInfo = make(map[string][]dirInfo)
 var indexList []int
 var conf Config
 var working string
+var exePath string
 
 func init() {
+	exe, err := os.Executable()
+	exePath = filepath.Dir(exe)
+	if err != nil {
+		log.Fatal(err)
+	}
 	checkExistence("config.toml", defaultConfigTomlData)
 	checkExistence("directories.json", defaultDirectoriesJsonData)
 	readDefaultFiles()
-	directoriesFileCopy(conf.Data.DirsFile)
+	directoriesFileCopy()
 	readDrectoriesJson()
 	workingOn()
 }
 
 func checkExistence(name string, value string) {
-	if _, err := os.Stat(name); err != nil {
-		file, err := os.OpenFile(name, os.O_WRONLY|os.O_CREATE, 0666)
+	path := filepath.Join(exePath, name)
+	if _, err := os.Stat(path); err != nil {
+		file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -35,7 +43,7 @@ func checkExistence(name string, value string) {
 		if _, err = file.WriteString(value); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("File(" + name + ") does not exist -> File is created.")
+		fmt.Printf("File(%s) does not exist -> File is created(%s).\n", name, path)
 	}
 }
 
@@ -43,22 +51,23 @@ func readDefaultFiles() {
 	if _, err := toml.Decode(defaultConfigTomlData, &conf); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := toml.DecodeFile("config.toml", &conf); err != nil {
+	if _, err := toml.DecodeFile(filepath.Join(exePath, "config.toml"), &conf); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func directoriesFileCopy(fileName string) {
-	if _, err := os.Stat(fileName); err == nil {
+func directoriesFileCopy() {
+	file := filepath.Join(exePath, conf.Data.DirsFile)
+	if _, err := os.Stat(file); err == nil {
 		return
 	}
-	src, err := os.Open("directories.json")
+	src, err := os.Open(filepath.Join(exePath, "directories.json"))
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 	defer src.Close()
-	dst, err := os.Create(fileName)
+	dst, err := os.Create(file)
 	if err != nil {
 		log.Fatal(err)
 		return
