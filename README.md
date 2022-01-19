@@ -82,14 +82,14 @@ prompt_text = "\n{32}[{$DirName}] {0}{36}{$WorkingDir} {37}{$Git}{37}\n$ "
 ### Replaceable text
 |Scope|Replaceable|Means|
 |:-:|:-|:-|
-|Selector|`{$Name}`|Directory name |
-||`{$Desc}`|Directory description|
-||`{$Path}`|Directory path|
-||`{$Enabled}`|Display directory info in select mode|
-|Terminal|`{$DirName}`|Directory name of the selected item|
-||`{$WorkingDir}`|The working directory of the terminal opened by the selected item|
-||`{$Git}`|Display the Git information when if the working directory is local repository|
-|Global|`{Number}`|Color escape sequences|
+|Selector|{$Name}|Directory name |
+||{$Desc}|Directory description|
+||{$Path}|Directory path|
+||{$Enabled}|Display directory info in select mode|
+|Terminal|{$DirName}|Directory name of the selected item|
+|{$WorkingDir}|The working directory of the terminal opened by the selected item|
+||{$Git}|Display the Git information when if the working directory is local repository|
+|Global|{Number}|Color escape sequences|
 
 ### Color escape sequences
 `{31}` replace to `\e[31m` it means `Foreground color red`
